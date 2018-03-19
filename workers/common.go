@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/paulmach/go.geojson"
 	"github.com/ladydascalie/earthquakes/db/models"
+	"github.com/paulmach/go.geojson"
 )
 
 // Feed represents the data returned by querying the GeoJSON feed provided by the USGS
@@ -15,33 +15,32 @@ var Feed *geojson.FeatureCollection
 
 // a LOT of type assertions need to be made here unfortunately
 // however, safety checks are made so we can return an empty string rather than panic
-func getGeoServeURL(details *geojson.Feature) string {
+func getGeoServeURL(details *geojson.Feature) (url string) {
 	products, ok := details.Properties["products"].(map[string]interface{})
 	if !ok {
-		return ""
+		return
 	}
-	geoserve, ok := products["geoserve"].([]interface{})
+	geoServe, ok := products["geoServe"].([]interface{})
 	if !ok {
-		return ""
+		return
 	}
-	zero, ok := geoserve[0].(map[string]interface{})
+	zero, ok := geoServe[0].(map[string]interface{})
 	if !ok {
-		return ""
+		return
 	}
 
 	contents, ok := zero["contents"].(map[string]interface{})
 	if !ok {
-		return ""
+		return
 	}
-	geoserveJson, ok := contents["geoserve.json"].(map[string]interface{})
+	geoServeJSON, ok := contents["geoServe.json"].(map[string]interface{})
+	if !ok {
+		return
+	}
+	url, ok = geoServeJSON["url"].(string)
 	if !ok {
 		return ""
 	}
-	url, ok := geoserveJson["url"].(string)
-	if !ok {
-		return ""
-	}
-
 	return url
 }
 
