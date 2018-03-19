@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -34,7 +33,6 @@ func init() {
 
 	// setup the app config
 	config.Setup()
-	spew.Dump(config.AppPort)
 
 	contents, err := ioutil.ReadFile("static/plates.json")
 	if err != nil {
