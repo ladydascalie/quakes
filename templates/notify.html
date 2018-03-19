@@ -1,0 +1,71 @@
+{{define "notify"}}
+<html>
+<head>
+    <title>Earthquake Data</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+<style>
+    html, body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+</style>
+<body>
+
+<div>
+    <h1>{{.Title}}</h1>
+    <h2>Language: <a href="/en/{{.ID}}">English</a> | <a href="/jp/{{.ID}}">日本語</a></h2>
+    <h2><a href="/">{{T "menu"}}</a></h2>
+    <hr>
+    <h2>{{T "earthquake_report"}}</h2>
+</div>
+
+
+<div>
+    <span><b>{{T "magnitude"}}:</b> {{.Magnitude}}
+        <progress value="{{.Magnitude}}" max="12"></progress></span>
+    <br>
+    <span><b>{{T "maps"}}:</b> <a href="{{.OpenStreetMapURL}}" target="_blank" rel="nofollow noreferrer noopener">OpenStreetMap</a> | <a
+            href="{{.AppleMapsURL}}">Device Maps</a></span>
+    <br>
+    <span><b>{{T "date"}}:</b> {{.Created}}</span>
+    <br>
+</div>
+
+<h3>{{T "report"}}</h3>
+<ul>
+    <li><b>{{T "magnitude"}}:</b> {{.Magnitude}}</li>
+    <li><b>{{T "place"}}:</b> {{.Place}}</li>
+    <li><b>{{T "maps"}}:</b> <a href="{{.URL}}" target="_blank" rel="noreferrer noopener nofollow">USGS Detailed
+        Page</a></li>
+    <li><b>{{T "longitude"}}:</b> {{.Lng}}</li>
+    <li><b>{{T "latitude"}}:</b> {{.Lat}}</li>
+    <li><b>{{T "depth"}}:</b> {{.Depth}} km</li>
+    <li><b>{{T "date"}}:</b> {{.Created}}</li>
+</ul>
+
+<h2>{{T "affected_cities"}}</h2>
+
+{{range $key, $value := .AffectedCities }}
+<ul>
+    <li><b>{{T "name"}}:</b> {{$value.Name}}</li>
+    <li><b>{{T "distance"}}:</b> {{$value.Distance}} KM</li>
+    <li><b>{{T "population"}}:</b> {{$value.Population}}</li>
+    <li><b>{{T "longitude"}}:</b> {{$value.Longitude}}</li>
+    <li><b>{{T "latitude"}}:</b> {{$value.Latitude}}</li>
+    <li><b>{{T "direction"}}:</b> {{$value.Direction}}</li>
+    <li><b>{{T "map"}}:</b> <a href="{{.OpenStreetMapURL}}" target="_blank" rel="nofollow noreferrer noopener">OpenStreetMap</a>
+        | <a href="{{.AppleMapsURL}}">Device Maps</a></li>
+</ul>
+<hr>
+<br>
+{{end}}
+</body>
+<footer>
+    <p>Open Data provided by the <a href="https://earthquake.usgs.gov/earthquakes/">USGS</a> and <a
+            href="http://openstreetmap.org/">OpenStreetMaps</a></p>
+</footer>
+</html>
+{{end}}

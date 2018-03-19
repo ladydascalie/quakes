@@ -1,0 +1,20 @@
+{
+	"title": "Title",
+	"earthquake_report": "Earthquake Report",
+	"magnitude": "Magnitude",
+	"place": "Place",
+	"maps": "Maps",
+	"reported": "Reported",
+	"depth": "Depth",
+	"affected_cities": "Affected Cities",
+	"name": "Name",
+	"population": "Population",
+	"distance": "Distance",
+	"latitude": "Latitude",
+	"longitude": "Longitude",
+	"report": "Report",
+	"direction": "Direction",
+	"map": "Map",
+	"date": "Date",
+	"menu": "Menu"
+}

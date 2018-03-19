@@ -1,0 +1,169 @@
+{{define "display"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.css' rel='stylesheet'/>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous">
+
+    </script>
+    <title>Document</title>
+</head>
+
+<body style="padding:0;margin:0;">
+<div id='map' style='width: 800px; height: 600px;'></div>
+<script>
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    var plates = JSON.parse("{{.}}");
+    var mapNode = document.getElementById("map");
+    mapNode.style.width = window.innerWidth + "px";
+    mapNode.style.height = window.innerHeight + "px";
+
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGFkeWRhc2NhbGllIiwiYSI6ImNpd2R5ZWdjOTAwNngydG82cTF5N3R5cnEifQ.rA6Xliv2QMFuZt4D1O-7pQ';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v9'
+    });
+    map.addControl(new mapboxgl.NavigationControl());
+    map.addControl(new mapboxgl.FullscreenControl());
+
+    // load geojson data
+    var geojson;
+    $.getJSON('/api/v1/points', function (data) { geojson = data });
+
+    console.log(plates);
+
+    map.on('load', function () {
+        for (var i = 0; i < plates.features.length; i++) {
+            map.addLayer({
+                "id": "plates-boundary-" + i,
+                "type": "fill",
+                "source": {
+                    "type": 'geojson',
+                    'data': plates.features[i]
+                },
+                "layout": {},
+                'paint': {
+                    'fill-color': getRandomColor(),
+                    'fill-opacity': 0.05,
+                    'fill-antialias': true,
+                    'fill-outline-color': "#000"
+                }
+            });
+        }
+        // // for (var i = 0; i < plates.length; i++) {
+        //
+        // // }
+        // // map.addLayer
+        //
+        // map.addSource('plates', {
+        //     "type": "geojson",
+        //     "data": plates
+        // });
+        //
+        // map.addLayer({
+        //     "id": "plates-boundaries",
+        //     "type": "fill",
+        //     "source": "plates",
+        //     "layout": {},
+        //     'paint': {
+        //         'fill-color': getRandomColor(),
+        //         'fill-opacity': 0.1,
+        //         'fill-antialias': true,
+        //         'fill-outline-color': "#fff"
+        //     },
+        //     "filter": ["==", "$type", "Polygon"]
+        // });
+
+        map.addLayer({
+            "id": "points",
+            "type": "symbol",
+            "source": {
+                "type": "geojson",
+                "data": geojson
+            },
+            "paint": {
+                "icon-color": "#00ff00",
+            },
+            "layout": {
+                "icon-image": "marker-15",
+                "icon-size": 1,
+                "text-field": "{title}",
+                "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                "text-size": 10,
+                "text-offset": [0, 1.4],
+                "text-anchor": "top"
+            }
+        });
+
+        // Open the alert's page in a new tab when clicked
+        map.on('click', 'points', function (e) {
+            var id = e.features[0].properties.id
+            // window.open("/en/" + id)
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            new mapboxgl.Popup()
+                    .setLngLat(e.features[0].geometry.coordinates)
+                    .setHTML("<b>Title: </b>" + e.features[0].properties.title +
+                            "<br><b>Magnitude: </b>" + e.features[0].properties.magnitude +
+                            "<br><b>Depth: </b>" + e.features[0].properties.depth + " km" +
+                            "<br><b>Date: </b>" + e.features[0].properties.date +
+                            "<br><a href='/en/" + e.features[0].properties.id + "' target='_blank'>View details</a>")
+                    .addTo(map);
+        });
+
+        // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+        map.on('mouseenter', 'points', function (e) {
+            map.getCanvas().style.cursor = 'pointer';
+
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'points', function () {
+            map.getCanvas().style.cursor = '';
+        });
+    });
+
+
+    function newFeatureCollection() {
+        return {
+            "type": "FeatureCollection",
+            "features": []
+        }
+    }
+
+    function newPoint(lng, lat) {
+        return {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    lng,
+                    lat
+                ]
+            }
+        }
+    }
+
+
+</script>
+</body>
+
+</html>
+{{end}}
