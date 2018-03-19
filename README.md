@@ -1,7 +1,7 @@
 # Quakes
 
 This project being in it's infancy, it's a complete war zone.
-Please don't hit me with a stick.
+Please don't hit me with a stick.[^1]
 
 To run it, you will need to:
 
@@ -14,3 +14,5 @@ You may setup your own telegram channel for testing the notifications. But as a 
 This is easily controlled via the config package.
 
 However note that you will need a valid token in your `.env` file for that.
+
+[^1]: not entirely true anymore, it is getting better however many things are likely to change, so I wouldn't consider things  to be settled just yet.
