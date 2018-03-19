@@ -27,6 +27,10 @@ var (
 
 	// WithBot controls whether or not the bot will receive notifications
 	WithBot bool
+
+	// BaseURL defines where the quakes app will be living
+	// example: https://quakes.mydomain.com/
+	BaseURL string
 )
 
 // Setup the application environment.
@@ -35,7 +39,8 @@ func Setup() {
 	Env = MustGetEnv("ENV")
 	AppPort = MustGetEnv("APP_PORT")
 	BotToken = MustGetEnv("BOT_TOKEN")
-	WithBot = false
+	BaseURL = MustGetEnv("BASE_URL")
+	WithBot = true
 }
 
 // MustGetEnv will fatal if the key cannot be found
