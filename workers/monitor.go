@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/paulmach/go.geojson"
 	"github.com/ladydascalie/earthquakes/config"
+	"github.com/paulmach/go.geojson"
 )
 
 // MonitorFeed fetches the data from the USGS feed
-func MonitorFeed() *geojson.FeatureCollection {
+func getFeed() *geojson.FeatureCollection {
 	cli := &http.Client{
 		Timeout: 5 * time.Second,
 	}

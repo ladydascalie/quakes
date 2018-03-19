@@ -2,13 +2,13 @@ package workers
 
 import (
 	"log"
-	"os"
 	"time"
 
-	"github.com/paulmach/go.geojson"
+	"github.com/globalsign/mgo"
 	"github.com/ladydascalie/earthquakes/bot"
-	"github.com/ladydascalie/earthquakes/db/mongo"
+	"github.com/ladydascalie/earthquakes/config"
 	"github.com/ladydascalie/earthquakes/domain"
+	"github.com/paulmach/go.geojson"
 )
 
 var (
@@ -17,19 +17,19 @@ var (
 )
 
 // Run kicks up the workers and sets them running
-func Run() {
-	for { // repeat the scheduled work at 15 second intervals
-		feed := MonitorFeed()
-		scheduledTasks(jobs, results, feed)
-		time.Sleep(15 * time.Second)
+func Run(db *mgo.Database) {
+	ticker := time.NewTicker(15 * time.Second)
+	defer ticker.Stop()
+	for range ticker.C {
+		process(db, jobs, results, getFeed())
 	}
 }
 
-func scheduledTasks(jobs chan *geojson.Feature, results chan *domain.Alert, feed *geojson.FeatureCollection) {
+func process(db *mgo.Database, jobs chan *geojson.Feature, results chan *domain.Alert, feed *geojson.FeatureCollection) {
 	// Start by scraping
 	go func() {
 		for i := 0; i < 16; i++ { // spin 16 scrapers
-			go Scrape(i, jobs, results)
+			go processAlerts(db, jobs, results)
 		}
 	}()
 
@@ -42,12 +42,12 @@ func scheduledTasks(jobs chan *geojson.Feature, results chan *domain.Alert, feed
 	go func() {
 		for range results {
 			alert := <-results
-			c := mongo.DB.C("quakes")
+			c := db.C("quakes")
 			if err := c.Insert(&alert); err != nil {
 				log.Println(err)
 				return
 			}
-			if os.Getenv("WITH_BOT") == "trues" {
+			if config.WithBot {
 				bot.NotifyTelegramChannel(alert)
 			}
 

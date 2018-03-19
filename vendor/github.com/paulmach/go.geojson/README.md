@@ -3,7 +3,7 @@ go.geojson
 
 Go.geojson is a package for **encoding and decoding** [GeoJSON](http://geojson.org/) into Go structs.
 Supports both the [json.Marshaler](http://golang.org/pkg/encoding/json/#Marshaler) and [json.Unmarshaler](http://golang.org/pkg/encoding/json/#Unmarshaler)
-interfaces as well as [sql.Scanner](http://golang.org/pkg/database/sql/#Scanner) for directly scanner PostGIS query results.
+interfaces as well as [sql.Scanner](http://golang.org/pkg/database/sql/#Scanner) for directly scanning PostGIS query results.
 The package also provides helper functions such as `UnmarshalFeatureCollection`, `UnmarshalFeature` and `UnmarshalGeometry`.
 
 #### To install
@@ -14,11 +14,7 @@ The package also provides helper functions such as `UnmarshalFeatureCollection`,
 
 	import "github.com/paulmach/go.geojson"
 
-<br />
-[![Build Status](https://travis-ci.org/paulmach/go.geojson.png?branch=master)](https://travis-ci.org/paulmach/go.geojson)
-&nbsp; &nbsp;
-[![Coverage Status](https://coveralls.io/repos/paulmach/go.geojson/badge.png?branch=master)](https://coveralls.io/r/paulmach/go.geojson?branch=master)
-&nbsp; &nbsp;
+[![Build Status](https://travis-ci.org/paulmach/go.geojson.svg?branch=master)](https://travis-ci.org/paulmach/go.geojson)
 [![Godoc Reference](https://godoc.org/github.com/paulmach/go.geojson?status.png)](https://godoc.org/github.com/paulmach/go.geojson)
 
 ## Examples
