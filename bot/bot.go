@@ -2,10 +2,10 @@ package bot
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/tucnak/telebot"
+	"github.com/ladydascalie/earthquakes/config"
 	"github.com/ladydascalie/earthquakes/domain"
+	"github.com/tucnak/telebot"
 )
 
 var (
@@ -21,12 +21,8 @@ var (
 
 // Begin the connection to the telegram API
 func Begin() {
-	botToken = os.Getenv("BOT_TOKEN")
-	if botToken == "" {
-		panic("canont load bot token")
-	}
 	var err error
-	Bot, err = telebot.NewBot(botToken)
+	Bot, err = telebot.NewBot(config.BotToken)
 	if err != nil {
 		panic(err)
 	}
@@ -37,9 +33,9 @@ func Begin() {
 func NotifyTelegramChannel(alert *domain.Alert) {
 	msg := fmt.Sprintf(`
 	*%.1f - %s*
-	- [View online](https://quakes.cable.fyi/en/%s)
+	- [View online](%s/en/%s)
 	- [Official USGS report](%s)
-	`, alert.Magnitude, alert.Place, alert.ID, alert.URL)
+	`, alert.Magnitude, alert.Place, config.BaseURL, alert.ID, alert.URL)
 
 	Bot.SendLocation(chat, &telebot.Location{
 		Longitude: float32(alert.Lng),
