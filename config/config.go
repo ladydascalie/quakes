@@ -31,6 +31,10 @@ var (
 	// BaseURL defines where the quakes app will be living
 	// example: https://quakes.mydomain.com/
 	BaseURL string
+
+	// QuakesChannel names the telegram channel
+	// in which we will be broadcasting alerts.
+	QuakesChannel string
 )
 
 // Setup the application environment.
@@ -38,8 +42,9 @@ var (
 func Setup() {
 	Env = MustGetEnv("ENV")
 	AppPort = MustGetEnv("APP_PORT")
-	BotToken = MustGetEnv("BOT_TOKEN")
 	BaseURL = MustGetEnv("BASE_URL")
+	BotToken = MustGetEnv("BOT_TOKEN")
+	QuakesChannel = MustGetEnv("QUAKES_CHANNEL")
 	WithBot = true
 }
 
