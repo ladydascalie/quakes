@@ -9,20 +9,21 @@ import (
 )
 
 var (
-	botToken string
-	// Bot represents the telegram bot
-	Bot *telebot.Bot
+	// bot represents the telegram bot
+	bot *telebot.Bot
 
+	// chat represents the telegram channel
+	// you want to broadcast to
 	chat = telebot.Chat{
 		Type:     telebot.ChatChannel,
-		Username: "usgs_quakes",
+		Username: config.QuakesChannel,
 	}
 )
 
 // Begin the connection to the telegram API
 func Begin() {
 	var err error
-	Bot, err = telebot.NewBot(config.BotToken)
+	bot, err = telebot.NewBot(config.BotToken)
 	if err != nil {
 		panic(err)
 	}
@@ -37,12 +38,12 @@ func NotifyTelegramChannel(alert *domain.Alert) {
 	- [Official USGS report](%s)
 	`, alert.Magnitude, alert.Place, config.BaseURL, alert.ID, alert.URL)
 
-	Bot.SendLocation(chat, &telebot.Location{
+	bot.SendLocation(chat, &telebot.Location{
 		Longitude: float32(alert.Lng),
 		Latitude:  float32(alert.Lat),
 	}, nil)
 
-	Bot.SendMessage(chat, msg, &telebot.SendOptions{
+	bot.SendMessage(chat, msg, &telebot.SendOptions{
 		ParseMode: telebot.ModeMarkdown,
 	})
 }
