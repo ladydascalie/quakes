@@ -40,7 +40,13 @@ var (
 // Setup the application environment.
 // this should be called shortly after loading the env file.
 func Setup() {
-	Env = MustGetEnv("ENV")
+	Env := MustGetEnv("ENV")
+	switch Env {
+	case "dev", "prod":
+	default:
+		log.Fatalf("%s is not a valid value for Env", Env)
+	}
+
 	AppPort = MustGetEnv("APP_PORT")
 	BaseURL = MustGetEnv("BASE_URL")
 	BotToken = MustGetEnv("BOT_TOKEN")
