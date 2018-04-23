@@ -18,6 +18,9 @@ var (
 
 // Run kicks up the workers and sets them running
 func Run(db *mgo.Database) {
+	// Do it once on startup
+	process(db, jobs, results, getFeed())
+
 	ticker := time.NewTicker(15 * time.Second)
 	defer ticker.Stop()
 	for range ticker.C {
@@ -50,7 +53,6 @@ func process(db *mgo.Database, jobs chan *geojson.Feature, results chan *domain.
 			if config.WithBot {
 				bot.NotifyTelegramChannel(alert)
 			}
-
 		}
 	}()
 }

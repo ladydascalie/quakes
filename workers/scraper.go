@@ -16,6 +16,7 @@ func processAlerts(db *mgo.Database, jobs <-chan *geojson.Feature, results chan<
 	for feature := range jobs {
 		id, ok := feature.ID.(string)
 		if !ok {
+			log.Println("unexpected: feature id is not a string")
 			return
 		}
 
@@ -31,10 +32,11 @@ func processAlerts(db *mgo.Database, jobs <-chan *geojson.Feature, results chan<
 
 		geoServeURL := getGeoServeURL(details)
 		if geoServeURL == "" {
+			log.Println("no geoserve url")
 			return
 		}
 
-		geoServe, _ := getGeoServe(geoServeURL)
+		geoServe, err := getGeoServe(geoServeURL)
 		if err != nil {
 			log.Println(err)
 		}
@@ -46,6 +48,7 @@ func processAlerts(db *mgo.Database, jobs <-chan *geojson.Feature, results chan<
 
 		alert := alertFromFeature(feature, geoServe)
 		if alert == nil {
+			log.Println("alertFromFeature: returned nil")
 			return
 		}
 

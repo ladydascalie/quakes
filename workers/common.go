@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/tidwall/gjson"
+
 	"github.com/ladydascalie/earthquakes/db/models"
 	"github.com/paulmach/go.geojson"
 )
@@ -16,36 +18,21 @@ var Feed *geojson.FeatureCollection
 // a LOT of type assertions need to be made here unfortunately
 // however, safety checks are made so we can return an empty string rather than panic
 func getGeoServeURL(details *geojson.Feature) (url string) {
-	products, ok := details.Properties["products"].(map[string]interface{})
-	if !ok {
-		return
-	}
-	geoServe, ok := products["geoServe"].([]interface{})
-	if !ok {
-		return
-	}
-	zero, ok := geoServe[0].(map[string]interface{})
-	if !ok {
-		return
-	}
+	const jsonPath = "properties.products.geoserve.0.contents.geoserve\\.json.url"
 
-	contents, ok := zero["contents"].(map[string]interface{})
-	if !ok {
-		return
+	content, err := details.MarshalJSON()
+	if err != nil {
+		panic(err)
 	}
-	geoServeJSON, ok := contents["geoServe.json"].(map[string]interface{})
-	if !ok {
-		return
+	j := gjson.ParseBytes(content)
+	if j.Get(jsonPath).Exists() {
+		url = j.Get(jsonPath).String()
 	}
-	url, ok = geoServeJSON["url"].(string)
-	if !ok {
-		return ""
-	}
-	return url
+	return
 }
 
-func getDetails(detailUrl string) (*geojson.Feature, error) {
-	res, err := http.Get(detailUrl)
+func getDetails(detailURL string) (*geojson.Feature, error) {
+	res, err := http.Get(detailURL)
 	if err != nil {
 		return nil, err
 	}
