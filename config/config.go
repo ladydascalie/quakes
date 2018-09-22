@@ -51,7 +51,7 @@ func Setup() {
 	BaseURL = MustGetEnv("BASE_URL")
 	BotToken = MustGetEnv("BOT_TOKEN")
 	QuakesChannel = MustGetEnv("QUAKES_CHANNEL")
-	WithBot = true
+	WithBot = MustGetEnv("WITH_BOT") == "true"
 }
 
 // MustGetEnv will fatal if the key cannot be found
