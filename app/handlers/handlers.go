@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -31,7 +32,7 @@ func init() {
 // FeedHandler this powers the feed api
 func FeedHandler(server *app.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		alerts := mongo.GetLastHundred(server.DB)
+		alerts := mongo.Get(server.DB, 100)
 		return c.JSON(http.StatusOK, alerts)
 	}
 }
@@ -40,7 +41,7 @@ func FeedHandler(server *app.Server) echo.HandlerFunc {
 // for consumption by the display template, generating the map.
 func PointsHandler(server *app.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		alerts := mongo.GetLastHundred(server.DB)
+		alerts := mongo.Get(server.DB, 100)
 		fc := geojson.NewFeatureCollection()
 
 		for _, alert := range alerts {
@@ -61,7 +62,16 @@ func PointsHandler(server *app.Server) echo.HandlerFunc {
 // ListHandler display the list of quakes
 func ListHandler(server *app.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		alerts := mongo.GetLastHundred(server.DB)
+		var magnitude int
+		var err error
+
+		m := c.QueryParam("magnitude")
+		magnitude, err = strconv.Atoi(m)
+		if err != nil {
+			magnitude = 0
+		}
+
+		alerts := mongo.GetMinimumMagnitude(server.DB, 100, magnitude)
 		return c.Render(200, "select", alerts)
 	}
 }

@@ -43,9 +43,20 @@ func GetById(db *mgo.Database, id string) domain.Alert {
 	return a
 }
 
-// GetLastHundred returns the last 100 alerts, sorted in descending order by their timestamp
-func GetLastHundred(db *mgo.Database) domain.Alerts {
+// Get returns the last 100 alerts, sorted in descending order by their timestamp
+func Get(db *mgo.Database, limit int) domain.Alerts {
 	var alerts domain.Alerts
-	db.C(Collection).Find(nil).Sort("-creatednano").Limit(100).All(&alerts)
+	db.C(Collection).Find(nil).Sort("-creatednano").Limit(limit).All(&alerts)
+	return alerts
+}
+
+// GetMinimumMagnitude the last 100 alerts, sorted in descending order by their timestamp
+func GetMinimumMagnitude(db *mgo.Database, limit, magnitude int) domain.Alerts {
+	var alerts domain.Alerts
+	db.C(Collection).
+		Find(bson.M{"magnitude": bson.M{"$gte": magnitude}}).
+		Sort("-creatednano").
+		Limit(limit).
+		All(&alerts)
 	return alerts
 }
