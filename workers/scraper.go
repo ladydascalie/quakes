@@ -14,6 +14,9 @@ import (
 // Scrape is where the GeoJSON gets transformed into actual alerts models
 func processAlerts(db *mgo.Database, jobs <-chan *geojson.Feature, results chan<- *domain.Alert) {
 	for feature := range jobs {
+		// ensure entry is cleaned
+		defer func() { <-jobs }()
+
 		id, ok := feature.ID.(string)
 		if !ok {
 			log.Println("unexpected: feature id is not a string")
@@ -54,7 +57,6 @@ func processAlerts(db *mgo.Database, jobs <-chan *geojson.Feature, results chan<
 
 		// Sent the alert to the results channel
 		results <- alert
-		<-jobs // read from jobs
 	}
 }
 
