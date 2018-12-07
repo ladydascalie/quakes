@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.css' rel='stylesheet'/>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet'/>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous">
@@ -19,6 +19,8 @@
 <body style="padding:0;margin:0;">
 <div id='map' style='width: 800px; height: 600px;'></div>
 <script>
+    'use strict';
+
     function getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -28,16 +30,30 @@
         return color;
     }
 
-    var plates = JSON.parse("{{.}}");
+    const popupTemplate = "<b>Title:</b> {{title}}" +
+                "<br><b>Magnitude:</b> {{magnitude}}" +
+                "<br><b>Depth:</b> {{depth}} km" +
+                "<br><b>Date:</b> {{date}}" +
+                "<br><a href='/en/{{id}}' target='_blank'>View details</a>"
+
+    function constructPopupHTML(data) {
+        return popupTemplate
+            .replace('{{title}}', data.title)
+            .replace('{{depth}}', data.depth)
+            .replace('{{date}}', data.date)
+            .replace('{{id}}', data.id)
+    }
+
+    var plates = JSON.parse("{features: []}");
     var mapNode = document.getElementById("map");
     mapNode.style.width = window.innerWidth + "px";
     mapNode.style.height = window.innerHeight + "px";
 
-
     mapboxgl.accessToken = 'pk.eyJ1IjoibGFkeWRhc2NhbGllIiwiYSI6ImNpd2R5ZWdjOTAwNngydG82cTF5N3R5cnEifQ.rA6Xliv2QMFuZt4D1O-7pQ';
+   
     var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v9'
+        style: 'mapbox://styles/mapbox/light-v9?optimize=true'
     });
     map.addControl(new mapboxgl.NavigationControl());
     map.addControl(new mapboxgl.FullscreenControl());
@@ -46,19 +62,18 @@
     var geojson;
     $.getJSON('/api/v1/points', function (data) { geojson = data });
 
-    console.log(plates);
-
     map.on('load', function () {
-        for (var i = 0; i < plates.features.length; i++) {
+        var plateLength = plates.features.length;
+        while (plateLength--) {
             map.addLayer({
-                "id": "plates-boundary-" + i,
-                "type": "fill",
-                "source": {
-                    "type": 'geojson',
-                    'data': plates.features[i]
+                id: "plates-boundary-" + i,
+                type: "fill",
+                source: {
+                    type: 'geojson',
+                    data: plates.features[i]
                 },
-                "layout": {},
-                'paint': {
+                layout: {},
+                paint: {
                     'fill-color': getRandomColor(),
                     'fill-opacity': 0.05,
                     'fill-antialias': true,
@@ -66,41 +81,18 @@
                 }
             });
         }
-        // // for (var i = 0; i < plates.length; i++) {
-        //
-        // // }
-        // // map.addLayer
-        //
-        // map.addSource('plates', {
-        //     "type": "geojson",
-        //     "data": plates
-        // });
-        //
-        // map.addLayer({
-        //     "id": "plates-boundaries",
-        //     "type": "fill",
-        //     "source": "plates",
-        //     "layout": {},
-        //     'paint': {
-        //         'fill-color': getRandomColor(),
-        //         'fill-opacity': 0.1,
-        //         'fill-antialias': true,
-        //         'fill-outline-color': "#fff"
-        //     },
-        //     "filter": ["==", "$type", "Polygon"]
-        // });
-
+ 
         map.addLayer({
-            "id": "points",
-            "type": "symbol",
-            "source": {
-                "type": "geojson",
-                "data": geojson
+            id: "points",
+            type: "symbol",
+            source: {
+                type: "geojson",
+                data: geojson
             },
-            "paint": {
+            paint: {
                 "icon-color": "#00ff00",
             },
-            "layout": {
+            layout: {
                 "icon-image": "marker-15",
                 "icon-size": 1,
                 "text-field": "{title}",
@@ -113,24 +105,18 @@
 
         // Open the alert's page in a new tab when clicked
         map.on('click', 'points', function (e) {
-            var id = e.features[0].properties.id
-            // window.open("/en/" + id)
+            var data = e.features[0];
             // Populate the popup and set its coordinates
             // based on the feature found.
             new mapboxgl.Popup()
-                    .setLngLat(e.features[0].geometry.coordinates)
-                    .setHTML("<b>Title: </b>" + e.features[0].properties.title +
-                            "<br><b>Magnitude: </b>" + e.features[0].properties.magnitude +
-                            "<br><b>Depth: </b>" + e.features[0].properties.depth + " km" +
-                            "<br><b>Date: </b>" + e.features[0].properties.date +
-                            "<br><a href='/en/" + e.features[0].properties.id + "' target='_blank'>View details</a>")
+                    .setLngLat(data.geometry.coordinates)
+                    .setHTML(constructPopupHTML(data.properties))
                     .addTo(map);
         });
 
         // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
         map.on('mouseenter', 'points', function (e) {
             map.getCanvas().style.cursor = 'pointer';
-
         });
 
         // Change it back to a pointer when it leaves.
@@ -138,32 +124,9 @@
             map.getCanvas().style.cursor = '';
         });
     });
-
-
-    function newFeatureCollection() {
-        return {
-            "type": "FeatureCollection",
-            "features": []
-        }
-    }
-
-    function newPoint(lng, lat) {
-        return {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    lng,
-                    lat
-                ]
-            }
-        }
-    }
-
-
 </script>
 </body>
 
 </html>
 {{end}}
+
