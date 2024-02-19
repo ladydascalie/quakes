@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/globalsign/mgo"
-	"github.com/ladydascalie/earthquakes/bot"
-	"github.com/ladydascalie/earthquakes/config"
-	"github.com/ladydascalie/earthquakes/domain"
-	"github.com/paulmach/go.geojson"
+	"github.com/ladydascalie/quakes/bot"
+	"github.com/ladydascalie/quakes/config"
+	"github.com/ladydascalie/quakes/domain"
+	geojson "github.com/paulmach/go.geojson"
 )
 
 var (

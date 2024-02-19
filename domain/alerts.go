@@ -3,7 +3,7 @@ package domain
 import (
 	"time"
 
-	"github.com/ladydascalie/earthquakes/db/models"
+	"github.com/ladydascalie/quakes/db/models"
 )
 
 // Alerts is a slice of Alert types, mostly used to contain a result set.

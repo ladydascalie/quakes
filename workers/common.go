@@ -8,8 +8,8 @@ import (
 
 	"github.com/tidwall/gjson"
 
-	"github.com/ladydascalie/earthquakes/db/models"
-	"github.com/paulmach/go.geojson"
+	"github.com/ladydascalie/quakes/db/models"
+	geojson "github.com/paulmach/go.geojson"
 )
 
 // Feed represents the data returned by querying the GeoJSON feed provided by the USGS

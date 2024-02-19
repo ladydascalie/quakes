@@ -15,4 +15,4 @@ This is easily controlled via the config package.
 
 However note that you will need a valid token in your `.env` file for that.
 
-[^1]: not entirely true anymore, it is getting better however many things are likely to change, so I wouldn't consider things  to be settled just yet.
+[^1]: not entirely true anymore, it is getting better however many things are likely to change, so I wouldn't consider things to be settled just yet.

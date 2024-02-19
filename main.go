@@ -6,13 +6,12 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/ladydascalie/earthquakes/app"
-	"github.com/ladydascalie/earthquakes/app/handlers"
-	"github.com/ladydascalie/earthquakes/bot"
-	"github.com/ladydascalie/earthquakes/config"
-	"github.com/ladydascalie/earthquakes/db/mongo"
-	"github.com/ladydascalie/earthquakes/templates"
-	"github.com/ladydascalie/earthquakes/workers"
+	"github.com/ladydascalie/quakes/app"
+	"github.com/ladydascalie/quakes/app/handlers"
+	"github.com/ladydascalie/quakes/config"
+	"github.com/ladydascalie/quakes/db/mongo"
+	"github.com/ladydascalie/quakes/templates"
+	"github.com/ladydascalie/quakes/workers"
 )
 
 func main() {
@@ -42,7 +41,7 @@ func main() {
 	db := mongo.Begin()
 
 	go workers.Run(db)
-	go bot.Begin()
+	// go bot.Begin()
 
 	// Create the server and start it
 	server := app.NewServer(db, e)

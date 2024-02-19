@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/ladydascalie/earthquakes/config/locales"
+	"github.com/ladydascalie/quakes/config/locales"
 )
 
 // Tpls is for global access to templates

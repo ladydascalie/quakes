@@ -2,13 +2,13 @@ package workers
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/ladydascalie/earthquakes/config"
-	"github.com/paulmach/go.geojson"
+	"github.com/ladydascalie/quakes/config"
+	geojson "github.com/paulmach/go.geojson"
 )
 
 // MonitorFeed fetches the data from the USGS feed
@@ -25,7 +25,7 @@ func getFeed() *geojson.FeatureCollection {
 		return nil
 	}
 
-	b, err := ioutil.ReadAll(res.Body)
+	b, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Println(err)
 		return nil

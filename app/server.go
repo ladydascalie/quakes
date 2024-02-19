@@ -6,7 +6,7 @@ import (
 	"github.com/globalsign/mgo"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/ladydascalie/earthquakes/config"
+	"github.com/ladydascalie/quakes/config"
 	"golang.org/x/crypto/acme/autocert"
 )
 

@@ -3,8 +3,8 @@ package bot
 import (
 	"fmt"
 
-	"github.com/ladydascalie/earthquakes/config"
-	"github.com/ladydascalie/earthquakes/domain"
+	"github.com/ladydascalie/quakes/config"
+	"github.com/ladydascalie/quakes/domain"
 	"github.com/tucnak/telebot"
 )
 

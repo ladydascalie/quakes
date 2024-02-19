@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/ladydascalie/earthquakes/app"
+	"github.com/ladydascalie/quakes/app"
 )
 
 // RegisterRoutes sets up the routes against echo.

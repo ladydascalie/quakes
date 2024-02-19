@@ -5,7 +5,7 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/ladydascalie/earthquakes/domain"
+	"github.com/ladydascalie/quakes/domain"
 )
 
 const (

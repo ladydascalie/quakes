@@ -9,15 +9,13 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/ladydascalie/earthquakes/app"
-	"github.com/ladydascalie/earthquakes/config/locales"
-	"github.com/ladydascalie/earthquakes/db/mongo"
-	"github.com/paulmach/go.geojson"
+	"github.com/ladydascalie/quakes/app"
+	"github.com/ladydascalie/quakes/config/locales"
+	"github.com/ladydascalie/quakes/db/mongo"
+	geojson "github.com/paulmach/go.geojson"
 )
 
-var (
-	plates string
-)
+var plates string
 
 func init() {
 	// read this file in memory and keep it there

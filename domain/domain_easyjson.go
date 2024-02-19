@@ -7,7 +7,7 @@ import (
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
-	models "github.com/ladydascalie/earthquakes/db/models"
+	models "github.com/ladydascalie/quakes/db/models"
 )
 
 // suppress unused package warning
